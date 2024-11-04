@@ -24,6 +24,7 @@
         const expiryDate = document.getElementById('expiryDate').value;
         const manufacturer = document.getElementById('manufacturer').value;
 
+
         await addDrugToBlockchain(batchNumber, name, expiryDate, manufacturer);
     });
 
