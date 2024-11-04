@@ -43,8 +43,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 
 
 Route::get('/drugs', [DrugController::class, 'index'])->name('drugs.index'); // View all drugs
-Route::get('/drugs/create', [DrugController::class, 'create'])->name('drugs.create'); // Show form
-Route::post('/drugs', [DrugController::class, 'store'])->name('drugs.store');         // Handle form submission
+Route::get('/drugs/create', [DrugController::class, 'create'])->name('drugs.create');
+Route::post('/drugs', [DrugController::class, 'store'])->name('drugs.store');
 Route::get('/drugs/{id}/edit', [DrugController::class, 'edit'])->name('drugs.edit'); // Edit a specific drug
 Route::put('/drugs/{id}', [DrugController::class, 'update'])->name('drugs.update');  // Update a drug
 Route::delete('/drugs/{id}', [DrugController::class, 'destroy'])->name('drugs.destroy'); // Delete a drug
+
+Route::get('/blockchain/integrity', [DrugController::class, 'checkBlockchainIntegrity']);

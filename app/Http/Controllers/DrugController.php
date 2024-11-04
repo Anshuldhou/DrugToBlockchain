@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Drug;
+use App\Services\Blockchain\DrugVerificationService;
 
 class DrugController extends Controller
 {
@@ -52,24 +53,27 @@ class DrugController extends Controller
         return view('drugs.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, DrugVerificationService $blockchainService)
     {
-        // Validate the request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'manufacturer' => 'required|string|max:255',
-            'batch_number' => 'required|string|unique:drugs,batch_number',
-            'expiry_date' => 'required|date',
-        ]);
+        $blockchainService->addDrug(
+            $request->batchNumber,
+            $request->name,
+            $request->expiryDate,
+            $request->manufacturer
+        );
 
-        // Create a new drug entry
-        Drug::create([
-            'name' => $request->input('name'),
-            'manufacturer' => $request->input('manufacturer'),
-            'batch_number' => $request->input('batch_number'),
-            'expiry_date' => $request->input('expiry_date'),
-        ]);
-
-        return redirect()->route('drugs.index')->with('success', 'Drug added successfully!');
+        return redirect()->route('drugs.index')->with('success', 'Drug added to blockchain successfully!');
     }
+
+    public function checkBlockchainIntegrity(DrugVerificationService $blockchainService)
+    {
+        $isValid = $blockchainService->validateBlockchain();
+
+        if ($isValid) {
+            return response()->json(['status' => 'success', 'message' => 'Blockchain is valid and intact']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Blockchain integrity is compromised']);
+        }
+    }
+
 }
